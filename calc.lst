@@ -1,0 +1,367 @@
+     1                                 %line 9+1 calc.asm
+     2                                 
+     3                                 %line 18+1 calc.asm
+     4                                 
+     5                                 %line 26+1 calc.asm
+     6                                 
+     7                                 %line 37+1 calc.asm
+     8                                 
+     9                                 %line 74+1 calc.asm
+    10                                 
+    11                                 %line 151+1 calc.asm
+    12                                 
+    13                                 %line 181+1 calc.asm
+    14                                 
+    15                                 [section .data]
+    16                                 
+    17 00000000 53796D626F6C732061-     instructions db "Symbols allowed =+-/*^, any pos number, enter q to exit"
+    18 00000000 6C6C6F776564203D2B-
+    19 00000000 2D2F2A5E2C20616E79-
+    20 00000000 20706F73206E756D62-
+    21 00000000 65722C20656E746572-
+    22 00000000 207120746F20657869-
+    23 00000000 74                 
+    24                                  len_instructions equ $ - instructions
+    25                                 
+    26 00000037 43616C633A20            prompt db "Calc: ",
+    27                                  len_prompt equ $ - prompt
+    28                                 
+    29 0000003D 0A                      new_line db 10
+    30                                  len_new_line equ $ - new_line
+    31                                 
+    32 0000003E 203D20                  equals_text db " = "
+    33                                  len_equals_text equ $ - equals_text
+    34                                 
+    35 00000041 0000000000000000        len_user_input dq 0
+    36                                 
+    37                                 
+    38 00000049 0000000000000000        output dq 0
+    39 00000051 0000                    len_output_string dw 0
+    40                                 
+    41 00000053 0000000000000000        second_op dq 0
+    42 0000005B 00                      op_type db 0
+    43                                 
+    44                                 [section .bss]
+    45                                 
+    46 00000000 <gap>                   user_input resb 100
+    47                                 
+    48                                 
+    49 00000064 <gap>                   output_string resb 8
+    50                                 
+    51                                 [section .text]
+    52                                 [global _start]
+    53                                 
+    54                                 
+    55                                 _start:
+    56                                 
+    57 00000000 48C7C001000000          mov rax, 1
+    58                                 %line 218+0 calc.asm
+    59 00000007 48C7C701000000          mov rdi, 1
+    60 0000000E 48C7C6[00000000]        mov rsi, instructions
+    61 00000015 48BA37000000000000-     mov rdx, len_instructions
+    62 00000015 00                 
+    63 0000001F 0F05                    syscall
+    64                                 %line 219+1 calc.asm
+    65 00000021 48C7C001000000          mov rax, 1
+    66                                 %line 219+0 calc.asm
+    67 00000028 48C7C701000000          mov rdi, 1
+    68 0000002F 48C7C6[00000000]        mov rsi, new_line
+    69 00000036 48BA01000000000000-     mov rdx, len_new_line
+    70 00000036 00                 
+    71 00000040 0F05                    syscall
+    72                                 %line 220+1 calc.asm
+    73                                 
+    74                                 _realStart:
+    75 00000042 48C7C001000000          mov rax, 1
+    76                                 %line 222+0 calc.asm
+    77 00000049 48C7C701000000          mov rdi, 1
+    78 00000050 48C7C6[00000000]        mov rsi, new_line
+    79 00000057 48BA01000000000000-     mov rdx, len_new_line
+    80 00000057 00                 
+    81 00000061 0F05                    syscall
+    82                                 %line 223+1 calc.asm
+    83 00000063 48C7C001000000          mov rax, 1
+    84                                 %line 223+0 calc.asm
+    85 0000006A 48C7C701000000          mov rdi, 1
+    86 00000071 48C7C6[00000000]        mov rsi, prompt
+    87 00000078 48BA06000000000000-     mov rdx, len_prompt
+    88 00000078 00                 
+    89 00000082 0F05                    syscall
+    90                                 %line 224+1 calc.asm
+    91                                 
+    92                                 
+    93 00000084 48C7C000000000          mov rax, 0
+    94                                 %line 226+0 calc.asm
+    95 0000008B 48C7C700000000          mov rdi, 0
+    96 00000092 48C7C6[00000000]        mov rsi, user_input
+    97 00000099 48C7C264000000          mov rdx, 100
+    98 000000A0 0F05                    syscall
+    99                                 
+   100 000000A2 48890425[00000000]      mov qword[len_user_input], rax
+   101 000000AA 48FF0C25[00000000]      dec qword[len_user_input]
+   102                                 %line 227+1 calc.asm
+   103 000000B2 803C25[00000000]71      cmp byte[user_input], 'q'
+   104 000000BA 0F84A3020000            je _end
+   105                                 
+   106                                 
+   107 000000C0 48C7C600000000          mov rsi, 0
+   108 000000C7 48C7C100000000          mov rcx, 0
+   109 000000CE 48C7C000000000          mov rax, 0
+   110                                 
+   111                                 
+   112                                 
+   113                                 %line 236+0 calc.asm
+   114 000000D5 50                      push rax
+   115 000000D6 53                      push rbx
+   116 000000D7 51                      push rcx
+   117 000000D8 52                      push rdx
+   118 000000D9 57                      push rdi
+   119 000000DA 56                      push rsi
+   120 000000DB 48C7C30A000000          mov rbx, 10
+   121 000000E2 4889F6                  mov rsi, rsi
+   122                                 
+   123 000000E5 48C7C000000000          mov rax, 0
+   124                                 
+   125                                  ..@9.loop:
+   126 000000EC 480FB68E[00000000]      movzx rcx, byte[user_input + rsi]
+   127                                 
+   128 000000F4 80F930                  cmp cl, '0'
+   129 000000F7 7212                    jb ..@9.end
+   130 000000F9 80F939                  cmp cl, '9'
+   131 000000FC 770D                    ja ..@9.end
+   132                                 
+   133 000000FE 80E930                  sub cl, '0'
+   134 00000101 480FAFC3                imul rax, rbx
+   135                                 
+   136 00000105 4801C8                  add rax, rcx
+   137                                 
+   138 00000108 48FFC6                  inc rsi
+   139 0000010B EBDD                    jmp ..@9.loop
+   140                                 
+   141                                  ..@9.end:
+   142 0000010D 4889F6                  mov rsi, rsi
+   143 00000110 48890425[00000000]      mov [output], rax
+   144 00000118 5E                      pop rsi
+   145 00000119 5F                      pop rdi
+   146 0000011A 5A                      pop rdx
+   147 0000011B 59                      pop rcx
+   148 0000011C 5B                      pop rbx
+   149 0000011D 58                      pop rax
+   150                                 %line 237+1 calc.asm
+   151                                 
+   152                                 _while:
+   153                                 
+   154 0000011E 8A86[00000000]          mov al, byte[user_input+rsi]
+   155 00000124 880425[00000000]        mov [op_type], al
+   156                                 
+   157 0000012B 48FFC6                  inc rsi
+   158                                 
+   159                                 %line 244+0 calc.asm
+   160 0000012E 50                      push rax
+   161 0000012F 53                      push rbx
+   162 00000130 51                      push rcx
+   163 00000131 52                      push rdx
+   164 00000132 57                      push rdi
+   165 00000133 56                      push rsi
+   166 00000134 48C7C30A000000          mov rbx, 10
+   167 0000013B 4889F6                  mov rsi, rsi
+   168                                 
+   169 0000013E 48C7C000000000          mov rax, 0
+   170                                 
+   171                                  ..@12.loop:
+   172 00000145 480FB68E[00000000]      movzx rcx, byte[user_input + rsi]
+   173                                 
+   174 0000014D 80F930                  cmp cl, '0'
+   175 00000150 7212                    jb ..@12.end
+   176 00000152 80F939                  cmp cl, '9'
+   177 00000155 770D                    ja ..@12.end
+   178                                 
+   179 00000157 80E930                  sub cl, '0'
+   180 0000015A 480FAFC3                imul rax, rbx
+   181                                 
+   182 0000015E 4801C8                  add rax, rcx
+   183                                 
+   184 00000161 48FFC6                  inc rsi
+   185 00000164 EBDD                    jmp ..@12.loop
+   186                                 
+   187                                  ..@12.end:
+   188 00000166 4889F6                  mov rsi, rsi
+   189 00000169 48890425[00000000]      mov [second_op], rax
+   190 00000171 5E                      pop rsi
+   191 00000172 5F                      pop rdi
+   192 00000173 5A                      pop rdx
+   193 00000174 59                      pop rcx
+   194 00000175 5B                      pop rbx
+   195 00000176 58                      pop rax
+   196                                 %line 245+1 calc.asm
+   197 00000177 50                      push rax
+   198                                 %line 245+0 calc.asm
+   199 00000178 53                      push rbx
+   200 00000179 51                      push rcx
+   201 0000017A 52                      push rdx
+   202 0000017B 57                      push rdi
+   203 0000017C 56                      push rsi
+   204 0000017D 8A1C25[00000000]        mov bl, byte[op_type]
+   205 00000184 80FB2B                  cmp bl, "+"
+   206 00000187 7417                    je ..@15.Wadd
+   207 00000189 80FB2D                  cmp bl, "-"
+   208 0000018C 7433                    je ..@15.Wsub
+   209 0000018E 80FB2A                  cmp bl, "*"
+   210 00000191 744B                    je ..@15.Wmul
+   211 00000193 80FB2F                  cmp bl, "/"
+   212 00000196 7460                    je ..@15.Wdiv
+   213 00000198 80FB5E                  cmp bl, "^"
+   214 0000019B 7477                    je ..@15.Wexp
+   215                                 
+   216 0000019D E9CE000000              jmp ..@15.done
+   217                                 
+   218                                  ..@15.Wadd:
+   219 000001A2 488B0425[00000000]      mov rax, [output]
+   220 000001AA 48030425[00000000]      add rax, [second_op]
+   221 000001B2 4883D000                adc rax, 0
+   222 000001B6 48890425[00000000]      mov [output], rax
+   223                                 
+   224 000001BE E9AD000000              jmp ..@15.done
+   225                                 
+   226                                  ..@15.Wsub:
+   227 000001C3 488B0425[00000000]      mov rax, [output]
+   228 000001CB 482B0425[00000000]      sub rax, [second_op]
+   229 000001D3 48890425[00000000]      mov [output], rax
+   230                                 
+   231 000001DB E990000000              jmp ..@15.done
+   232                                 
+   233                                  ..@15.Wmul:
+   234 000001E0 488B0425[00000000]      mov rax, [output]
+   235 000001E8 48F72C25[00000000]      imul qword[second_op]
+   236 000001F0 48890425[00000000]      mov [output], rax
+   237                                 
+   238 000001F8 EB79                    jmp ..@15.done
+   239                                 
+   240                                  ..@15.Wdiv:
+   241 000001FA 488B0425[00000000]      mov rax, [output]
+   242 00000202 4899                    cqo
+   243 00000204 48F73C25[00000000]      idiv qword[second_op]
+   244 0000020C 48890425[00000000]      mov [output], rax
+   245                                 
+   246 00000214 EB5D                    jmp ..@15.done
+   247                                  ..@15.Wexp:
+   248 00000216 488B3C25[00000000]      mov rdi, qword[second_op]
+   249 0000021E 4883FF00                cmp rdi, 0
+   250 00000222 7441                    je ..@15.zeroExp
+   251                                 
+   252 00000224 4883FF01                cmp rdi, 1
+   253 00000228 7449                    je ..@15.done
+   254                                 
+   255 0000022A 48C7C601000000          mov rsi, 1
+   256 00000231 488B0C25[00000000]      mov rcx, [output]
+   257 00000239 48393425[00000000]      cmp qword[second_op], rsi
+   258 00000241 7700                    ja ..@15.loopExp
+   259 00000243 762E                    jbe ..@15.done
+   260                                 
+   261                                  ..@15.loopExp:
+   262 00000245 488B0425[00000000]      mov rax, [output]
+   263 0000024D 48F7E9                  imul rcx
+   264 00000250 48890425[00000000]      mov [output], rax
+   265                                 
+   266 00000258 48FFC6                  inc rsi
+   267 0000025B 48393425[00000000]      cmp qword[second_op], rsi
+   268 00000263 72DE                    jb ..@15.loopExp
+   269 00000265 EB0C                    jmp ..@15.done
+   270                                 
+   271                                  ..@15.zeroExp:
+   272 00000267 48C70425[00000000]-     mov qword[output], 1
+   273 00000267 01000000           
+   274 00000273 EBFE                    jmp ..@15.done
+   275                                 
+   276                                  ..@15.done:
+   277 00000275 5E                      pop rsi
+   278 00000276 5F                      pop rdi
+   279 00000277 5A                      pop rdx
+   280 00000278 59                      pop rcx
+   281 00000279 5B                      pop rbx
+   282 0000027A 58                      pop rax
+   283                                 %line 246+1 calc.asm
+   284                                 
+   285 0000027B 483B3425[00000000]      cmp rsi, [len_user_input]
+   286 00000283 0F828FFEFFFF            jb _while
+   287 00000289 73FE                    jae _finish
+   288                                 
+   289                                 _finish:
+   290                                 
+   291 0000028B 48C7C001000000          mov rax, 1
+   292                                 %line 253+0 calc.asm
+   293 00000292 48C7C701000000          mov rdi, 1
+   294 00000299 48C7C6[00000000]        mov rsi, user_input
+   295 000002A0 488B1425[00000000]      mov rdx, [len_user_input]
+   296 000002A8 0F05                    syscall
+   297                                 %line 254+1 calc.asm
+   298                                 
+   299 000002AA 48C7C001000000          mov rax, 1
+   300                                 %line 255+0 calc.asm
+   301 000002B1 48C7C701000000          mov rdi, 1
+   302 000002B8 48C7C6[00000000]        mov rsi, equals_text
+   303 000002BF 48BA03000000000000-     mov rdx, len_equals_text
+   304 000002BF 00                 
+   305 000002C9 0F05                    syscall
+   306                                 %line 256+1 calc.asm
+   307                                 
+   308 000002CB 488B0425[00000000]      mov rax, [output]
+   309                                 %line 257+0 calc.asm
+   310 000002D3 48C7C30A000000          mov rbx, 10
+   311 000002DA 4831C9                  xor rcx, rcx
+   312                                 
+   313 000002DD 4883F800                cmp rax, 0
+   314 000002E1 742D                    je ..@20.zero
+   315                                 
+   316                                  ..@20.IntToStack:
+   317 000002E3 4831D2                  xor rdx, rdx
+   318 000002E6 48F7FB                  idiv rbx
+   319 000002E9 80C230                  add dl, "0"
+   320                                 
+   321 000002EC 52                      push rdx
+   322 000002ED 48FFC1                  inc rcx
+   323                                 
+   324 000002F0 4883F800                cmp rax, 0
+   325 000002F4 75EB                    jne ..@20.IntToStack
+   326                                 
+   327 000002F6 4831FF                  xor rdi, rdi
+   328                                  ..@20.StackToStr:
+   329 000002F9 5A                      pop rdx
+   330 000002FA 8897[00000000]          mov byte[output_string + rdi], dl
+   331                                 
+   332 00000300 48FFC7                  inc rdi
+   333 00000303 4839F9                  cmp rcx, rdi
+   334 00000306 75EF                    jne ..@20.StackToStr
+   335                                 
+   336 00000308 48890C25[00000000]      mov [len_output_string], rcx
+   337 00000310 EB10                    jmp ..@20.done
+   338                                 
+   339                                  ..@20.zero:
+   340 00000312 C60425[00000000]30      mov byte[output_string], '0'
+   341 0000031A 66C70425[00000000]-     mov word[len_output_string], 1
+   342 0000031A 0100               
+   343                                  ..@20.done
+   344                                 %line 258+1 calc.asm
+   345 00000324 48C7C001000000          mov rax, 1
+   346                                 %line 258+0 calc.asm
+   347 0000032B 48C7C701000000          mov rdi, 1
+   348 00000332 48C7C6[00000000]        mov rsi, output_string
+   349 00000339 488B1425[00000000]      mov rdx, [len_output_string]
+   350 00000341 0F05                    syscall
+   351                                 %line 259+1 calc.asm
+   352                                 
+   353 00000343 48C7C001000000          mov rax, 1
+   354                                 %line 260+0 calc.asm
+   355 0000034A 48C7C701000000          mov rdi, 1
+   356 00000351 48C7C6[00000000]        mov rsi, new_line
+   357 00000358 48BA01000000000000-     mov rdx, len_new_line
+   358 00000358 00                 
+   359 00000362 0F05                    syscall
+   360                                 %line 261+1 calc.asm
+   361                                 
+   362 00000364 E9D4FCFFFF              jmp _realStart
+   363                                 
+   364                                 _end:
+   365 00000369 48C7C03C000000          mov rax, 60
+   366 00000370 48C7C700000000          mov rdi, 0
+   367 00000377 0F05                    syscall
